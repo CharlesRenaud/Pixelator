@@ -1,0 +1,216 @@
+html {
+    box-sizing: border-box;
+}
+
+audio {
+  height: 40px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  visibility: hidden;
+}
+
+#pause {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  transition: 0.2s;
+  color: gold
+}
+
+#pause:hover {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.hidden {
+  display: none;
+}
+
+
+body {
+    display: block;
+    background-image: url("assets/bg-pixelator.png") ;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    margin: 0px;
+    padding-top: 0px;
+    height: 100vh;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Silkscreen', cursive;
+}
+
+label{
+  text-align: center;
+}
+
+input[type="file"] {
+    transform: translateX(16%);
+    margin-top: 5px; 
+}
+
+input[type="number"] {
+    width: 50px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+  all: unset;
+  width: 260px;
+  font-family: 'Silkscreen', cursive;
+  background-color: rgb(33, 32, 32);
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
+  color: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 12px;
+  height: 30px
+
+}
+
+.dark {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #00000050;
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    margin-top: 0px
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-top: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  transition: 0.2s;
+  
+  font-size: 14px !important;
+  width: 150px !important;
+  max-width: 150px !important;
+  display: flex;
+  justify-content: center;
+  justify-self: center;
+  margin-left: auto;
+  margin-right: auto;
+
+  font-family: 'Silkscreen', cursive;
+  letter-spacing: 0em;
+
+}
+p {
+  all: unset;
+}
+button {
+  all : unset
+}
+
+
+
+.button:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #d609d3,
+    #871670,
+    #cc5abd,
+    #bf2ee3,
+    #9e0982,
+    #9f2fa4,
+    #d116f2,
+    #d634ff,
+    #5b0a64
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+
+}
+
+@keyframes glowing-button {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.button:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+
+}
+
+.button:hover {
+    opacity: 0.75;
+    cursor: pointer;
+}
+
+.validate {
+  opacity: 0.5;
+}
+
+
+/* Changez la couleur de la barre de progression en rouge */
+progress {
+  background-color: #000000; /* Couleur de l'arrière-plan */
+  border-radius: 30px;
+  margin-top: 10px
+}
+
+/* Utilisez le pseudo-élément ::-webkit-progress-value pour changer la couleur de la barre de progression elle-même */
+progress::-webkit-progress-value {
+  background-color: rgb(170, 21, 239); /* Couleur de la barre de progression */
+  border-radius: 30px;
+
+}
+
+/* Utilisez le pseudo-élément ::-webkit-progress-bar pour changer la couleur de l'arrière-plan de la barre de progression */
+progress::-webkit-progress-bar {
+  background-color: #000000; /* Couleur de l'arrière-plan de la barre de progression */
+  border-radius: 30px;
+}

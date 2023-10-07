@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pixeliseur d'Images</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
+    </style>
+</head>
+
+<body>
+    <div class="dark">
+        <h1>Pixeliseur d'Images</h1>
+
+        <div id="pause">Pause</div>
+
+        <label for="inputFolder">Dossier d'Entrée:
+            </br>
+            <input type="text" id="inputFolderPath" readonly>
+            <p for="inputFolder" id="fakeInput" class="button">Sélectionner</p>
+        </label>
+        <input class="hidden" type="file" id="inputFolder" webkitdirectory directory>
+        <br>
+        <br>
+
+        <label for="outputFolder">Dossier de Sortie:</label>
+        <input type="text" id="outputFolderPath" readonly>
+        <button class="button" id="selectOutputFolder">Sélectionner</button>
+        <br>
+
+        <label for="pixelizationLevel">Intensité de Pixelisation:</label>
+        <input type="number" id="pixelizationLevel" min="1" max="10" value="3">
+        <br>
+        <button class="button" id="pixelizeButton">Pixeliser</button>
+        <progress id="progressBar" value="0" max="100"></progress>
+
+        <audio id='bgAudio' controls autoplay>
+            <source src="assets/sound.mp3" type="audio/mpeg">
+            Votre navigateur ne prend pas en charge l'élément audio.
+        </audio>
+
+    </div>
+    <!-- ... (autres balises HTML) -->
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            var audio = document.getElementById("bgAudio");
+            var pause = document.getElementById("pause");
+
+            var tooglerMusic;
+
+            audio.volume = 0.2;
+            pause.addEventListener("click", () => {
+                if (tooglerMusic === false) {
+                    audio.play()
+                    tooglerMusic = true;
+                    pause.textContent = "PAUSE"
+                } else {
+                    audio.pause()
+                    tooglerMusic = false;
+                    pause.textContent = "PLAY"
+                }
+            })
+
+            const inputFolderInput = document.getElementById('inputFolder');
+            const inputFolderPath = document.getElementById('inputFolderPath');
+            const selectInputFolder = document.getElementById('selectInputFolder');
+            const outputFolderPath = document.getElementById('outputFolderPath');
+            const selectOutputFolder = document.getElementById('selectOutputFolder');
+            const pixelizationLevelInput = document.getElementById('pixelizationLevel');
+            const pixelizeButton = document.getElementById('pixelizeButton');
+            const fakeInput = document.getElementById('fakeInput');
+
+            let inputFolder = '';
+            let outputFolder = '';
+
+            inputFolderPath.addEventListener('change', () => {
+                if (inputFolderPath.value) {
+                    fakeInput.classList.add("validate")
+                }
+            })
+            outputFolderPath.addEventListener('change', () => {
+                if (outputFolderPath.value) {
+                    selectOutputFolder.classList.add("validate")
+                }
+            })
+
+            // À l'intérieur de votre "DOMContentLoaded" event listener
+            electron.ipcRenderer.on('update-progress', (event, progress) => {
+                const progressBar = document.getElementById('progressBar');
+                progressBar.value = progress;
+            });
+
+            inputFolderInput.addEventListener('change', () => {
+                if (inputFolderInput.files.length > 0) {
+                    inputFolder = inputFolderInput.files[0].path;
+                    const lastSlashIndex = inputFolder.lastIndexOf('\\');
+                    const secondSlashIndex = inputFolder.lastIndexOf('/');
+
+                    // Si un "/" a été trouvé, tronquer la chaîne à cette position
+                    if (lastSlashIndex !== -1) {
+                        inputFolder = inputFolder.substring(0, lastSlashIndex + 1);
+                        const event = new Event('change');
+                        inputFolderPath.value = inputFolder;
+                        inputFolderPath.dispatchEvent(event);
+
+
+                    }
+                    if (secondSlashIndex !== -1) {
+                        inputFolder = inputFolder.substring(0, secondSlashIndex + 1);
+                        const event = new Event('change');
+                        inputFolderPath.value = inputFolder;
+                        inputFolderPath.dispatchEvent(event);
+                    }
+                }
+            });
+
+
+            selectOutputFolder.addEventListener('click', () => {
+                // Envoyez un message IPC pour demander la sélection du dossier de sortie
+                electron.ipcRenderer.send('select-output-folder');
+            });
+
+            electron.ipcRenderer.on('selected-output-folder', (event, outputPath) => {
+                outputFolder = outputPath;
+                const event2 = new Event('change');
+                outputFolderPath.value = outputPath;
+                outputFolderPath.dispatchEvent(event2);
+
+                // Supprimer l'écouteur une fois que l'événement a été reçu
+                electron.ipcRenderer.removeAllListeners('selected-output-folder');
+            });
+
+            pixelizeButton.addEventListener('click', () => {
+                const pixelizationLevel = parseInt(pixelizationLevelInput.value);
+
+                if (inputFolder && outputFolder && !isNaN(pixelizationLevel)) {
+                    electron.ipcRenderer.send('start-pixelization', {
+                        inputFolder,
+                        outputFolder,
+                        pixelizationLevel,
+                    });
+                } else {
+                    console.error('Veuillez sélectionner un dossier d\'entrée, un dossier de sortie valide et spécifier l\'intensité de pixelisation.');
+                }
+            });
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>

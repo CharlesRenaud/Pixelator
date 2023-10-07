@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pixeliseur d'Images</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Silkscreen&display=swap');
+    </style>
+</head>
+
+<body>
+    <div class="dark">
+    <h1>Pixeliseur d'Images</h1>
+    
+    <label for="inputFolder">Dossier d'Entrée:</label>
+    <input type="file" id="inputFolder" webkitdirectory directory>
+    <br>
+
+    <label for="outputFolder">Dossier de Sortie:</label>
+    <input type="file" id="outputFolder" webkitdirectory directory>
+    <br>
+
+    <label for="pixelizationLevel">Intensité de Pixelisation:</label>
+    <input type="number" id="pixelizationLevel" min="1" max="10" value="3">
+    <br>
+    <button id="pixelizeButton">Pixeliser</button>
+    </div>
+    <script>
+        const inputFolderInput = document.getElementById('inputFolder');
+        const outputFolderInput = document.getElementById('outputFolder');
+        const pixelizationLevelInput = document.getElementById('pixelizationLevel');
+        const pixelizeButton = document.getElementById('pixelizeButton');
+
+        let inputFolder = '';
+        let outputFolder = '';
+
+        inputFolderInput.addEventListener('change', () => {
+            if (inputFolderInput.files.length > 0) {
+                inputFolder = inputFolderInput.files[0].path;
+                const lastSlashIndex = inputFolder.lastIndexOf('\\');
+                const secondSlashIndex = inputFolder.lastIndexOf('/');
+
+                // Si un "/" a été trouvé, tronquer la chaîne à cette position
+                if (lastSlashIndex !== -1) {
+                    inputFolder = inputFolder.substring(0, lastSlashIndex + 1);
+                }
+                if (secondSlashIndex !== -1) {
+                    inputFolder = inputFolder.substring(0, secondSlashIndex + 1);
+                }            }
+        });
+
+        outputFolderInput.addEventListener('change', () => {
+            if (outputFolderInput.files.length > 0) {
+                // Vous pouvez utiliser l'attribut `webkitRelativePath` du premier fichier sélectionné
+                // pour obtenir le chemin du dossier de sortie.
+                outputFolder = outputFolderInput.files[0].path;
+                const lastSlashIndex = outputFolder.lastIndexOf('\\');
+                const secondSlashIndex = outputFolder.lastIndexOf('/');
+
+                // Si un "/" a été trouvé, tronquer la chaîne à cette position
+                if (lastSlashIndex !== -1) {
+                    outputFolder = outputFolder.substring(0, lastSlashIndex + 1);
+                }
+                if (secondSlashIndex !== -1) {
+                    outputFolder = outputFolder.substring(0, secondSlashIndex + 1);
+                }
+            }
+        });
+
+        pixelizeButton.addEventListener('click', () => {
+            const pixelizationLevel = parseInt(pixelizationLevelInput.value);
+
+            if (inputFolder && outputFolder && !isNaN(pixelizationLevel)) {
+                console.log(`Dossier d'Entrée: ${inputFolder}`);
+                console.log(`Dossier de Sortie: ${outputFolder}`);
+                console.log(`Intensité de Pixelisation: ${pixelizationLevel}`);
+
+                // Utilisez electron.ipcRenderer pour envoyer un message IPC
+                electron.ipcRenderer.send('start-pixelization', {
+                    inputFolder,
+                    outputFolder,
+                    pixelizationLevel,
+                });
+            } else {
+                console.error('Veuillez sélectionner un dossier d\'entrée, un dossier de sortie valide et spécifier l\'intensité de pixelisation.');
+            }
+        });
+
+
+
+    </script>
+</body>
+
+</html>
