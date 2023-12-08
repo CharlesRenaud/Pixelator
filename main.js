@@ -3,6 +3,8 @@ const fs = require('fs').promises;
 const Jimp = require('jimp');
 const path = require('path');
 
+
+
 let mainWindow;
 
 function createWindow() {
@@ -45,19 +47,18 @@ ipcMain.on('select-output-folder', (event) => {
   });
 });
 
-// Fonction pour pixeliser une image avec une intensité donnée
-async function pixelizeImage(inputPath, outputPath, pixelizationLevel) {
-  try {
-    const image = await Jimp.read(inputPath);
-    await image.pixelate(pixelizationLevel).writeAsync(outputPath);
-  } catch (error) {
-    console.error('Erreur lors de la pixelisation de l\'image :', error);
-  }
-}
 
-ipcMain.on('update-progress', (event, progress) => {
-  mainWindow.webContents.send('update-progress', progress);
-});
+async function pixelizeImage(inputPath, outputPath, pixelizationLevel) {
+  
+    const optimizedImage = await Jimp.read(inputPath);
+
+    console.log(outputPath)
+
+    // Pixelisez l'image avec Jimp
+    optimizedImage.pixelate(pixelizationLevel).write(outputPath);
+
+    console.log('Image pixelisée avec succès !');
+}
 
 
 // Gestionnaire IPC pour démarrer la pixelisation
@@ -71,7 +72,11 @@ ipcMain.on('start-pixelization', async (event, data) => {
 
     for (const file of files) {
       const inputPath = path.join(inputFolder, file);
-      const outputPath = path.join(outputFolder, file);
+      const segments = outputFolder.split(/[\\/]/);
+      const nameFile = segments[segments.length - 1]
+      console.log(nameFile)
+
+      const outputPath = path.join(outputFolder,`${nameFile}_${processedFiles}.png`);
 
       // Créez le répertoire de sortie s'il n'existe pas
       const outputDir = path.dirname(outputPath);

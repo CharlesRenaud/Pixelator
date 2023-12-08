@@ -1,7 +1,9 @@
 {
   "devDependencies": {
     "electron": "^26.3.0",
-    "electron-builder": "^24.6.4"
+    "electron-builder": "^24.6.4",
+    "esm": "^3.2.25",
+    "imagemin-cli": "^7.0.0"
   },
   "name": "pixelator",
   "version": "1.0.0",
@@ -26,6 +28,11 @@
   },
   "dependencies": {
     "dialogflow": "^1.2.0",
-    "jimp": "^0.22.10"
+    "imagemin": "^8.0.1",
+    "imagemin-jpegoptim": "^8.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "jimp": "^0.22.10",
+    "sharp": "^0.32.6"
   }
 }
